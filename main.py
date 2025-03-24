@@ -1,14 +1,18 @@
 import time
+from copy import deepcopy
+from time import sleep
+
+
 def mostra_tabuleiro(tabuleiro):
-
-    print("-------------") # Marca uma divisão entre telas para controle visual
-
+    print("   a   b   c")
+    print("--------------") # Marca uma divisão entre telas para controle visual
+    id_linha = 1
     for linha in tabuleiro:
 
-        print("|", linha[0], "|", linha[1], "|", linha[2], "|")
+        print(f"{id_linha}|", linha[0], "|", linha[1], "|", linha[2], "|")
 
-        print("-------------") # Marca uma divisão entre telas para controle visual
-
+        print("--------------") # Marca uma divisão entre telas para controle visual
+        id_linha+=1
 def verifica_vitoria(tabuleiro, jogador):
 
     # Vamos verificar possibilidade de vitória por sequência horizontal
@@ -36,43 +40,49 @@ def verifica_vitoria(tabuleiro, jogador):
 
     return False
 
+def jogo_finalizado(tabuleiro) -> bool:
+    if verifica_vitoria(tabuleiro, "X") or verifica_vitoria(tabuleiro, "O") or empate(tabuleiro):
+        return True
+    else: return False
+
+def empate(tabuleiro) -> bool:
+    # se ainda houver possiveis jogadas, retornara False
+    # se o jogo ja tiver finalizado, retornara True
+    for linha in tabuleiro:
+        if ' ' in linha:
+            return False
+    return True
+
+def avaliar(tabuleiro) -> int:
+    #funcao para avaliar o resultado
+    #-1 = derrota | 0 = empate | 1 = vitoria
+    if verifica_vitoria(tabuleiro, "O"):
+        return 1
+    elif verifica_vitoria(tabuleiro, "X"):
+        return -1
+    return 0
+
+def minimax(tabuleiro):
+
+    if jogo_finalizado(tabuleiro):
+        return avaliar(tabuleiro)
+
+    value = float('-inf')
+    for jogadada in jogada_bot(tabuleiro):
+
+        value = max(value, minimax(jogadada))
+
+    return value
 
 def jogada_bot(tabuleiro): #funcao foi substituida
-  for coluna in range(0,3):
-    for linha in range(0,3):
-      if tabuleiro[linha][coluna] == " ":
-        tabuleiro[linha][coluna] = "O"
-        time.sleep(1)
-        mostra_tabuleiro(tabuleiro)
-        if verifica_vitoria(tabuleiro, "O"):
-            print(f"Jogador O venceu!!!")
-            return
-        return tabuleiro
-
-def preencher_posicao(tabuleiro, linha, coluna, jogador):
-  tabuleiro[linha][coluna] = "O"
-  time.sleep(1)
-  mostra_tabuleiro(tabuleiro)
-  if verifica_vitoria(tabuleiro, "O"):
-    print(f"Jogador O venceu!!!")
-  return tabuleiro
-
-def jogada_bot_melhor(tabuleiro):
-  for coluna in range(0,3):
-    for linha in range(0,3):
-
-      if tabuleiro[linha][coluna] == "O":
-        if tabuleiro[linha][coluna + 1 if coluna < 2 else 0] == " " or tabuleiro[linha][coluna + 1 if coluna < 2 else 0] == " ":
-          if tabuleiro[linha][coluna - 1 if coluna > 0 else 2] ==  " " or tabuleiro[linha][coluna - 1 if coluna > 0 else 2] == "O":
-            if tabuleiro[linha][coluna + 1 if coluna < 2 else 0] == " ":
-              return preencher_posicao(tabuleiro, linha, coluna + 1 if coluna < 2 else 0, "O")
-            else:
-              return preencher_posicao(tabuleiro,linha, coluna - 1 if coluna > 0 else 2, "O")
-
-      if tabuleiro[linha][coluna] == " ":
-
-
-        return preencher_posicao(tabuleiro, linha, coluna, "O")
+    possibilidades = []
+    for x in range(0,3):
+      for y in range(0,3):
+          if tabuleiro[x][y] == " ":
+              jogada = deepcopy(tabuleiro)
+              jogada[x][y] = "O"
+              possibilidades.append(jogada)
+    return possibilidades
 
 def start_jogo():
 
@@ -94,33 +104,45 @@ def start_jogo():
 
     # Definindo o posicionamento dos marcadores
     for i in range(1,10):
-        if jogador_atual == "O":
-            tabuleiro = jogada_bot_melhor(tabuleiro)#jogada_bot(tabuleiro)
-            jogador_atual = jogadores[i % 2]
-            continue
-        linha = int(input(f"Jogador {jogador_atual} escolha uma linha 1 - 3: ")) - 1
-        coluna = int(input(f"Jogador {jogador_atual} escolha uma coluna 1 - 3: ")) - 1
-
-        # Verificando se a posicao escolhida e valida
-        if tabuleiro[linha][coluna] != " ":
-
-            print("Posição ocupada.\nEscolha outra opção.")
+        if jogador_atual == "X":
             linha = int(input(f"Jogador {jogador_atual} escolha uma linha 1 - 3: ")) - 1
-            coluna = int(input(f"Jogador {jogador_atual} escolha uma coluna 1 - 3: ")) - 1
+            coluna = str(input(f"Jogador {jogador_atual} escolha uma coluna a b c: "))
+            coluna = ord(coluna.lower()) - 97 #na tabela ascii, a = 97, b=98, c = 99.
 
-        tabuleiro[linha][coluna] = jogador_atual
-        mostra_tabuleiro(tabuleiro)
+            # Verificando se a posicao escolhida e valida
+            if tabuleiro[linha][coluna] != " ":
 
-        if verifica_vitoria(tabuleiro, jogador_atual):
+                print("Posição ocupada.\nEscolha outra opção.")
+                linha = int(input(f"Jogador {jogador_atual} escolha uma linha 1 - 3: ")) - 1
+                coluna = str(input(f"Jogador {jogador_atual} escolha uma coluna a b c: "))
+                coluna = ord(coluna.lower()) - 97
 
-            print(f"Jogador {jogador_atual} venceu!!!")
-            return
+            tabuleiro[linha][coluna] = jogador_atual
+            mostra_tabuleiro(tabuleiro)
 
-        # Precisamos alterar entre os jogadores
-        jogador_atual = jogadores[i % 2]
+            if jogo_finalizado(tabuleiro):
+                break
+
+        jogador_atual = jogadores[i % 2] #mudanca de jogador
+
+        if jogador_atual == "O": #se for o bot
+            #chama funcao minimax, que retorna a posicao que ele jogara
+            possiveis_jogadas = jogada_bot(tabuleiro)
+            tabuleiro = max(possiveis_jogadas, key=minimax)
+            sleep(1)
+            mostra_tabuleiro(tabuleiro)
+
+            if jogo_finalizado(tabuleiro):
+                break
+
+    if verifica_vitoria(tabuleiro, jogador_atual):
+        avaliar(tabuleiro)
+        print(f"Jogador {jogador_atual} venceu!!!")
+        return
 
     # Caso nenhuma das condições de vitória sejam encontradas, devemos considerar o resultado de empate
-    print("O jogo terminou empatado.")
-
+    if empate(tabuleiro):
+        print("O jogo terminou empatado.")
+        avaliar(tabuleiro)
 
 start_jogo()
