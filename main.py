@@ -1,4 +1,3 @@
-import time
 from copy import deepcopy
 from time import sleep
 
@@ -62,25 +61,33 @@ def avaliar(tabuleiro) -> int:
         return -1
     return 0
 
-def minimax(tabuleiro):
+def minimax(tabuleiro, maximizacao=False):
+    #maximizacao: para alterar entre o bot e o humano
+    #na simulacao do bot, ele deve ganhar, do humano, perder
 
     if jogo_finalizado(tabuleiro):
         return avaliar(tabuleiro)
 
-    value = float('-inf')
-    for jogadada in jogada_bot(tabuleiro):
+    if maximizacao:
+        value = float('-inf')
 
-        value = max(value, minimax(jogadada))
+        for jogada in jogada_bot(tabuleiro, "O"):
+            value = max(value, minimax(jogada, False))
+    else:
+        value = float('+inf')
+
+        for jogada in jogada_bot(tabuleiro, "X"):
+            value = min(value, minimax(jogada, True))
 
     return value
 
-def jogada_bot(tabuleiro): #funcao foi substituida
+def jogada_bot(tabuleiro, jogador): #funcao foi substituida
     possibilidades = []
     for x in range(0,3):
       for y in range(0,3):
           if tabuleiro[x][y] == " ":
               jogada = deepcopy(tabuleiro)
-              jogada[x][y] = "O"
+              jogada[x][y] = jogador
               possibilidades.append(jogada)
     return possibilidades
 
@@ -127,7 +134,7 @@ def start_jogo():
 
         if jogador_atual == "O": #se for o bot
             #chama funcao minimax, que retorna a posicao que ele jogara
-            possiveis_jogadas = jogada_bot(tabuleiro)
+            possiveis_jogadas = jogada_bot(tabuleiro, "O")
             tabuleiro = max(possiveis_jogadas, key=minimax)
             sleep(1)
             mostra_tabuleiro(tabuleiro)
