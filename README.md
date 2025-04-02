@@ -1,34 +1,35 @@
-# Jogo da Velha
+# Tic-Tac-Toe
 
-## Descrição
-Este é um simples jogo da velha (tic-tac-toe) implementado em Python. O jogo pode ser jogado no terminal e permite que dois jogadores se enfrentem alternando suas jogadas.
+## Description
+This is a simple Tic-Tac-Toe game implemented in Python. The player competes against an AI opponent using the Minimax algorithm, which ensures an optimal strategy.
 
-## Tecnologias Utilizadas
+## Technologies Used
 - Python 3
 
-## Como Executar
+## How to Run
 
-1. Certifique-se de ter o Python 3 instalado em seu computador.
-2. Clone este repositório:
+1. Make sure you have Python 3 installed on your computer.
+2. Clone this repository:
    ```sh
    git clone https://github.com/BenitoTM/Jogo_da_velha.git
    ```
-3. Navegue até o diretório do projeto:
+3. Navigate to the project directory:
    ```sh
    cd Jogo_da_velha
    ```
-4. Execute o script principal:
+4. Run the main script:
    ```sh
    python jogo_da_velha.py
    ```
 
-## Como Jogar
-- O jogo é para dois jogadores.
-- O tabuleiro é representado por uma grade 3x3.
-- Cada jogador faz uma jogada por vez, escolhendo uma posição vazia para colocar seu símbolo ('X' ou 'O').
-- O jogo termina quando um jogador completa uma linha, coluna ou diagonal com seu símbolo, ou quando todas as casas estão preenchidas (empate).
+## How to Play
+- The player plays against an AI opponent.
+- The board is a 3x3 grid.
+- The player takes turns against the AI, selecting an available position to place their symbol ('X' or 'O').
+- The AI uses the Minimax algorithm to make optimal moves.
+- The game ends when a player completes a row, column, or diagonal with their symbol, or when all positions are filled (resulting in a draw).
 
-## Exemplo de Execução
+## Example Gameplay
 ```
  1 | 2 | 3 
 -----------
@@ -36,7 +37,7 @@ Este é um simples jogo da velha (tic-tac-toe) implementado em Python. O jogo po
 -----------
  7 | 8 | 9 
 
-Jogador X, escolha um número: 5
+Player (X), choose a number: 5
 
  1 | 2 | 3 
 -----------
@@ -44,7 +45,7 @@ Jogador X, escolha um número: 5
 -----------
  7 | 8 | 9 
 
-Jogador O, escolha um número: 1
+AI (O) chooses position: 1
 
  O | 2 | 3 
 -----------
@@ -52,11 +53,3 @@ Jogador O, escolha um número: 1
 -----------
  7 | 8 | 9 
 ```
-
-## Melhorias Futuras
-- Implementar uma interface gráfica.
-- Adicionar modo contra IA.
-- Melhorar a validação de entrada do usuário.
-
-## Licença
-Este projeto está sob a licença MIT. Consulte o arquivo `LICENSE` para mais detalhes.
